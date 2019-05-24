@@ -27,6 +27,7 @@ public class Leagues {
         Club c1 = new Club("chelsea", "Chelsea", "EN", "CHE");
         Club c2 = new Club("tottenham", "Tottenham", "EN", "TOT");
 
+
         l2.addClubToLeague(c1);
         l2.addClubToLeague(c2);
 
@@ -45,7 +46,7 @@ public class Leagues {
         return leagues;
     }*/
 
- //Get all leagues or leagues with name
+ //Get all leagues or leagues with name or countrycode
     public List<League> getLeagues(String searchString, String country) {
 
         if (searchString.isEmpty() && country.isEmpty()){
@@ -67,16 +68,16 @@ public class Leagues {
                 }
             }
         } else  if (!country.isEmpty()) {
-            for (League league: leagues) {
+
+            l = getLeaguesInCountry(country);
+ /*           for (League league: leagues) {
                 if (league.getCountry().toUpperCase().equals(country.toUpperCase())){
                     l.add(league);
                 }
 
-            }
+            }*/
         }
 
-
-        //TODO ADD Countries too?
 
         return l;
     }
@@ -88,19 +89,7 @@ public class Leagues {
 
     }
 
-    //get all the leagues with the same country code TODO
-    public List<League> getLeaguesInCountry(String country){
 
-        ArrayList<League> leaguesByCountry = new ArrayList<>();
-
-        for (League l: leagues) {
-            if (l.getCountry().toUpperCase() == country.toUpperCase()){
-                leaguesByCountry.add(l);
-            }
-
-        }
-        return  leaguesByCountry;
-    }
 
 
     //Get all the clubs in a league
@@ -132,6 +121,9 @@ public class Leagues {
 
 
     //add a club to a league
+
+    //TODO Add a club by adding an ID and then finding the club in the list
+    //TODO FRÅGA OM DETTA
     public void addClubToLeague(String legueKey, Club club){
 
         for (League item : leagues) {
@@ -179,11 +171,14 @@ public class Leagues {
 
     //PATCH
 
+    //update a league with key, but ignore clubs and key
+
     public void updateleague(String key, Map<Object,Object> update){
 
         League oldLeague = findLeagueByKey(key);
 
         update.remove("key");
+        update.remove("clubs");
 
         update.forEach((k, v) -> {
 
@@ -265,6 +260,20 @@ public class Leagues {
 
     }
 
+    //get all the leagues with the same country code
+    public ArrayList<League> getLeaguesInCountry(String country){
+
+        ArrayList<League> leaguesByCountry = new ArrayList<>();
+
+        for (League l: leagues) {
+            if (l.getCountry().toUpperCase().equals(country.toUpperCase())){
+                leaguesByCountry.add(l);
+            }
+
+        }
+        return  leaguesByCountry;
+    }
+
     private Club findClubInLeagueList(String leagueKey, String clubKey){
 
         League l = findLeagueByKey(leagueKey);
@@ -285,6 +294,7 @@ public class Leagues {
         return  null;
 
     }
+
 
 
 

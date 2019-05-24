@@ -18,14 +18,14 @@ public class LeagueController {
     private Leagues leagues = new Leagues();
 
     //http://localhost:8080/leagues?country=EN&searchString=lig
-    @RequestMapping(value = "leagues", method = RequestMethod.GET)
+    @RequestMapping(value = "/leagues", method = RequestMethod.GET)
     public List<League> getLeagues(@RequestParam(value = "searchString", defaultValue =  "") String searchString
                                 , @RequestParam(value = "country", defaultValue = "") String country){
 
         return leagues.getLeagues(searchString, country);
     }
 
-    @RequestMapping(value = "leagues/{key}", method = RequestMethod.GET)
+    @RequestMapping(value = "/leagues/{key}", method = RequestMethod.GET)
     public League getLeague(@PathVariable("key") String key ){
         League league = leagues.getLeagueByKey(key);
 
@@ -33,15 +33,15 @@ public class LeagueController {
     }
 
 
-    @RequestMapping(value = "leagues/{key}/clubs", method = RequestMethod.GET)
+    @RequestMapping(value = "/leagues/{key}/clubs", method = RequestMethod.GET)
     public List<Club> getLeaguesClubList(@PathVariable("key") String key){
 
         return  leagues.getClubsInLeague(key);
 
     }
 
-    @RequestMapping(value = "leagues/{key}/clubs/{clubkey}", method = RequestMethod.GET)
-    public Club getLeaguesClub(@PathVariable("key") String leagueKey, @PathVariable("clubkey") String clubKey){
+    @RequestMapping(value = "/leagues/{key}/clubs/{clubkey}", method = RequestMethod.GET)
+    public Club getClubFromLeague(@PathVariable("key") String leagueKey, @PathVariable("clubkey") String clubKey){
 
 
         return  leagues.getClubInLeagueWithKey(leagueKey, clubKey);
@@ -84,7 +84,7 @@ public class LeagueController {
     }
 
 
-    @RequestMapping(value = "leagues/{key}", method = RequestMethod.PATCH, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/leagues/{key}", method = RequestMethod.PATCH, consumes = MediaType.APPLICATION_JSON_VALUE)
     public League updateLeague(@PathVariable("key")String key, @RequestBody Map<Object, Object> update){
 
 
@@ -131,7 +131,7 @@ public class LeagueController {
 
 
 
-    @RequestMapping(value = "leagues/{key}/clubs/{clubkey}", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/leagues/{key}/clubs/{clubkey}", method = RequestMethod.DELETE)
     public Club deleteClubFromLeague(@PathVariable("key") String leagueKey, @PathVariable("clubkey") String clubKey){
 
         return leagues.deleteClubFromLeagueWithKeys(leagueKey, clubKey);

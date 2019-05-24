@@ -1,5 +1,6 @@
 package com.example.Football;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Club {
@@ -9,7 +10,7 @@ public class Club {
     private String country;
     private String code;
     private Boolean inRunning;
-   // private List<Club> clubs ;
+    private List<Player> players ;
 
     public Club(){
 
@@ -22,6 +23,7 @@ public class Club {
         this.country = country;
         this.code = code;
         this.inRunning = true;
+        players = new ArrayList<>();
     }
 
 
@@ -55,5 +57,16 @@ public class Club {
 
     public void setCode(String code) {
         this.code = code;
+    }
+
+    public List<Player> getPlayers() {
+        return players;
+    }
+
+    public void addPlayer(Player player) {
+        players.add(player);
+    }
+    public void deletePlayerFromList(Player player){
+        players.remove(player);
     }
 }

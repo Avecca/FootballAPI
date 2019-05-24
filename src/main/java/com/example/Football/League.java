@@ -26,12 +26,11 @@ public class League {
 
     }
 
-
     public String getKey() {
         return key;
     }
 
-    public void setKey(String key) {
+   public void setKey(String key) {
         this.key = key;
     }
 
