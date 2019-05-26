@@ -79,4 +79,7 @@ public class League {
         return clubs.size();
     }
 
+    public void setClubs(List<Club> clubs) {
+        this.clubs = clubs;
+    }
 }

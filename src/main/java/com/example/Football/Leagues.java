@@ -1,9 +1,22 @@
 package com.example.Football;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
+import java.io.*;
+
+import com.google.gson.reflect.TypeToken;
+import com.google.gson.stream.JsonReader;
+import jdk.nashorn.internal.parser.JSONParser;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 import org.springframework.util.ReflectionUtils;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -15,29 +28,14 @@ public class Leagues {
         this.leagues = new ArrayList<>();
 
         startData();
-    }
-
-
-    private void startData(){
-
-        League l1 = new League("laliga", "La Liga", "ESP");
-        League l2 = new League("premierleague", "Premier League", "EN");
-        League l3 = new League("bundesliga", "Bundesliga", "DE");
-
-        Club c1 = new Club("chelsea", "Chelsea", "EN", "CHE");
-        Club c2 = new Club("tottenham", "Tottenham", "EN", "TOT");
-
-
-        l2.addClubToLeague(c1);
-        l2.addClubToLeague(c2);
-
-        leagues.add(l1);
-        leagues.add(l2);
-        leagues.add(l3);
 
 
 
     }
+
+
+
+
 
 
     //GET methods
@@ -117,6 +115,10 @@ public class Leagues {
     //add a league
     public void addLeague(League league){
         leagues.add(league);
+
+
+        saveLeagues();
+
     }
 
 
@@ -134,6 +136,8 @@ public class Leagues {
 
      /*   League l = findLeagueByKey(legueKey);
         l.addClubToLeague(club);*/
+
+        saveLeagues();
 
 
     }
@@ -155,6 +159,8 @@ public class Leagues {
 
         leagues.add(newLeagueInfo);
 
+        saveLeagues();
+
     }
 
     public  void replaceClubInLeague(String leagueKey, String clubKey, Club newClubInfo){
@@ -166,6 +172,8 @@ public class Leagues {
         newClubInfo.setKey(oldClub.getKey());
 
         league.addClubToLeague(newClubInfo);
+
+        saveLeagues();
     }
 
 
@@ -192,6 +200,8 @@ public class Leagues {
 
 
 
+        saveLeagues();
+
 
     }
 
@@ -209,10 +219,12 @@ public class Leagues {
 
 
         if (findLeagueByKey(key) == null){
+            saveLeagues();
             return  l;
         }
 
         return null;
+
 
     }
 
@@ -220,6 +232,8 @@ public class Leagues {
         League l = findLeagueByKey(key);
 
         l.clearClubList();
+
+        saveLeagues();
 
 
   /*      for (Club c: l.getClubs()) {
@@ -238,6 +252,7 @@ public class Leagues {
         league.deleteClubFromList(c);
 
         if (findClubInLeagueList(leagueKey, clubKey) == null){
+            saveLeagues();
             return c;
         }
 
@@ -295,6 +310,207 @@ public class Leagues {
 
     }
 
+    private void startData(){
+
+/*        League l1 = new League("laliga", "La Liga", "ESP");
+        League l2 = new League("premierleague", "Premier League", "EN");
+        League l3 = new League("bundesliga", "Bundesliga", "DE");
+
+        Club c1 = new Club("chelsea", "Chelsea", "EN", "CHE");
+        Club c2 = new Club("tottenham", "Tottenham", "EN", "TOT");
+
+
+        l2.addClubToLeague(c1);
+        l2.addClubToLeague(c2);
+
+        leagues.add(l1);
+        leagues.add(l2);
+        leagues.add(l3);*/
+
+
+
+        try {
+            fetchLeaguesFromFile("leagues.json");
+
+            System.out.println(leagues);
+        }
+        catch (FileNotFoundException e){
+            e.printStackTrace();
+        }
+
+
+        System.out.println(leagues.size());
+
+/*
+
+        try {
+            saveAsJsonFile("test.json");
+        }
+        catch (IOException e){
+            e.printStackTrace();
+        }
+*/
+
+
+
+    }
+
+
+    private Type REVIEW_TYPE = new TypeToken<List<League>>() {}.getType();
+
+    private void fetchLeaguesFromFile(String filename) throws FileNotFoundException{
+
+        Gson gson = new Gson();
+        JsonReader reader = new JsonReader(new FileReader(filename));
+        leagues = gson.fromJson(reader, REVIEW_TYPE);  //League.class
+    }
+
+    private void saveLeagues(){
+        try {
+            saveAsJsonFile("leagues.json");
+        }
+        catch (IOException e){
+            e.printStackTrace();
+        }
+    }
+
+
+    //writing test
+    @SuppressWarnings("unchecked")
+    private  void saveAsJsonFile(String filename) throws IOException {
+
+
+
+
+
+
+/*   //FUNKAR
+      ArrayList<JSONObject> jsonLeage = new ArrayList<>();
+
+        for (League l: leagues) {
+
+            JSONObject jsObj = new JSONObject();
+            jsObj.put("key", l.getKey());
+            jsObj.put("name", l.getName());
+            jsObj.put("country", l.getCountry());
+            jsObj.put("active", l.getActive());
+
+            JSONArray clubs = new JSONArray();
+            for (Club item: l.getClubs()) {
+
+                JSONObject clubVars = new JSONObject();
+
+                clubVars.put("key", item.getKey());
+                clubVars.put("name", item.getName());
+                clubVars.put("country", item.getCountry());
+                clubVars.put("code", item.getCode());
+
+
+
+
+                clubs.add(clubVars);
+
+
+            }
+            jsObj.put("clubs", clubs);
+           // jsObj.put("clubs", clubs);
+
+
+            jsonLeage.add(jsObj);
+        }*/
+
+
+        GsonBuilder gsBuilder = new GsonBuilder();
+
+        Gson gson = gsBuilder.create();
+        String jsObj = gson.toJson(leagues);
+
+
+        //overwrite every time, append = false
+        try (FileWriter file = new FileWriter(filename, false)){
+            file.write(jsObj);
+            System.out.println("saved to file");
+
+/*            for (JSONObject obj:  jsonLeage) {  //jsonLeage
+                file.write(obj.toJSONString());
+
+                System.out.println("Copied to file");
+                System.out.println("JSON Obj: " + obj);
+
+            }*/
+
+        }
+
+
+    }
+
+
+
+    //extra tries
+
+
+    //reading
+    // private void fetchLeaguesFromFile(){
+
+  /*      try {
+
+            JSONObject jsObj = (JSONObject) fetchingLeagues("test.json");
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }*/
+
+
+/*
+        JSONArray jsArray = new JSONArray();
+
+        String lineFromFile;
+
+        try(BufferedReader bReader = new BufferedReader(new FileReader("text.json"))) {
+
+            while ((lineFromFile = bReader.readLine()) != null ){
+
+                if (lineFromFile != null && !lineFromFile.isEmpty()) {
+                    JSONObject jsObj = new JSONObject();
+                    League l = new League();
+
+                    String[] split = lineFromFile.split("\\s+");
+                    jsObj.put("key", split[0]);
+                    l.setKey(split[0]);
+                }
+            }
+
+
+        } catch ( Exception e){
+            e.printStackTrace();
+        }*/
+
+
+
+
+
+    // }
+
+ /*   private Object fetchingLeagues(String filename) throws Exception{
+        FileReader reader = new FileReader(filename);
+        JSONParser jsonParser = new JSONParser();
+       // return (JSONObject)jsonParser.parse(reader);
+
+    }*/
+
+
+ //saving
+
+    //ObjectMapper oM = new ObjectMapper();
+
+    // oM.readValues(new File("test.json"), League.class) = leagues;
+
+    // ArrayList<String> blahblah = new ArrayList<>();
+
+ /*       for (League l: leagues) {
+            String test = gson.toJson(l, League.class);
+        }*/
+    //  ObjectMapper oM = new ObjectMapper();
 
 
 
