@@ -1,8 +1,16 @@
 package com.example.Football;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
+import com.google.gson.stream.JsonReader;
 import org.springframework.util.ReflectionUtils;
+import java.io.*;
 
+import java.io.FileWriter;
+import java.io.IOException;
 import java.lang.reflect.Field;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -17,36 +25,6 @@ public class Clubs {
         startData();
     }
 
-    private void startData(){
-
-
-        Club c1 = new Club("chelsea", "Chelsea", "EN", "CHE");
-        Club c2 = new Club("tottenham", "Tottenham", "EN", "TOT");
-        Club c3 = new Club("arsenal", "Arsenal", "EN", "ARS");
-
-        Club c4 = new Club("realmadrid", "Real Madrid", "ESP", "RM");
-        Club c5 = new Club("barcelonafc", "Barcelona FC", "ESP", "BFC");
-
-        Club c6 = new Club("dortmund", "Dortmund", "DE", "DRM");
-
-        Player p1 = new Player("0","Gareth Bale","WAL","playing", 10);
-        Player p2 = new Player("1","Nacho","ESP","injured", 100);
-        Player p3 = new Player("2","Harry Kane","EN","playing", 1000);
-
-
-        c4.addPlayer(p1);
-        c4.addPlayer(p2);
-
-        c2.addPlayer(p3);
-
-
-        clubs.add(c1);
-        clubs.add(c2);
-        clubs.add(c3);
-        clubs.add(c4);
-        clubs.add(c5);
-        clubs.add(c6);
-    }
 
 
     //GET methods
@@ -148,6 +126,7 @@ public class Clubs {
     //add a club
     public  void addClub(Club club) {
         clubs.add(club);
+        saveClubs();
     }
 
 
@@ -171,7 +150,7 @@ public class Clubs {
 
         });
 
-
+        saveClubs();
 
     }
 
@@ -196,7 +175,7 @@ public class Clubs {
 
         });
 
-
+        saveClubs();
     }
 
 
@@ -205,6 +184,8 @@ public class Clubs {
         Club club = findClubByKey(key);
 
         club.addPlayer(player);
+
+        saveClubs();
 
     }
 
@@ -219,6 +200,7 @@ public class Clubs {
 
 
         if (findClubByKey(key) == null){
+            saveClubs();
             return  cl;
         }
 
@@ -233,6 +215,8 @@ public class Clubs {
         Player pl = findPlayerInClub(key, id);
 
         club.deletePlayerFromList(pl);
+
+        saveClubs();
 
 
         if (findPlayerInClub(key, id) == null){
@@ -272,5 +256,84 @@ public class Clubs {
 
         }
         return null;
+    }
+
+    private void startData(){
+
+
+/*        Club c1 = new Club("chelsea", "Chelsea", "EN", "CHE");
+        Club c2 = new Club("tottenham", "Tottenham", "EN", "TOT");
+        Club c3 = new Club("arsenal", "Arsenal", "EN", "ARS");
+
+        Club c4 = new Club("realmadrid", "Real Madrid", "ESP", "RM");
+        Club c5 = new Club("barcelonafc", "Barcelona FC", "ESP", "BFC");
+
+        Club c6 = new Club("dortmund", "Dortmund", "DE", "DRM");
+
+        Player p1 = new Player("0","Gareth Bale","WAL","playing", 10);
+        Player p2 = new Player("1","Nacho","ESP","injured", 100);
+        Player p3 = new Player("2","Harry Kane","EN","playing", 1000);
+
+
+        c4.addPlayer(p1);
+        c4.addPlayer(p2);
+
+        c2.addPlayer(p3);
+
+
+        clubs.add(c1);
+        clubs.add(c2);
+        clubs.add(c3);
+        clubs.add(c4);
+        clubs.add(c5);
+        clubs.add(c6);*/
+
+        try {
+            fetchClubsFromFile("clubs.json");
+
+            System.out.println("CLUBS: " + clubs);
+        }
+        catch (FileNotFoundException e){
+            e.printStackTrace();
+        }
+
+
+        //saveClubs();
+    }
+
+    private Type REVIEW_TYPE = new TypeToken<List<Club>>() {}.getType();
+
+    private  void fetchClubsFromFile(String filename) throws FileNotFoundException{
+        Gson gson = new Gson();
+        JsonReader reader = new JsonReader(new FileReader(filename));
+        clubs = gson.fromJson(reader, REVIEW_TYPE);
+    }
+
+    private void saveClubs(){
+        try {
+            saveClubsAsJsonFile("clubs.json");
+        }
+        catch (IOException e){
+            e.printStackTrace();
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    private void saveClubsAsJsonFile(String filename) throws IOException {
+
+
+        GsonBuilder gsBuilder = new GsonBuilder();
+
+        Gson gson = gsBuilder.create();
+        String jsObj = gson.toJson(clubs);
+
+
+        //overwrite every time, append = false
+        try (FileWriter file = new FileWriter(filename, false)){
+            file.write(jsObj);
+            System.out.println("saved to file: clubs");
+
+        }
+
     }
 }

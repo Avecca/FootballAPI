@@ -1,8 +1,17 @@
 package com.example.Football;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
+import com.google.gson.stream.JsonReader;
 import org.springframework.util.ReflectionUtils;
 
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.lang.reflect.Field;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -18,29 +27,6 @@ public class Players {
         startData();
     }
 
-
-    private void startData(){
-
-        Player p1 = new Player("0","Gareth Bale","WAL","playing", 10);
-        Player p2 = new Player("1","Nacho","ESP","injured", 100);
-        Player p3 = new Player("2","Harry Kane","EN","playing",1000);
-        Player p4 = new Player("3","Lionel Messi","ARG","injured", 10);
-        Player p5 = new Player("4","Fredrik Ljungberg","SWE","inactive", 10);
-        Player p6 = new Player("5","Sergio Garcia","ESP","playing", 10);
-        Player p7 = new Player("6","Marco Reus","DE","playing", 100);
-        Player p8 = new Player("7","Mesut Özil","DE","injured", 99);
-        Player p9 = new Player("8","Eden Hazard","BE","playing", 10);
-
-        players.add(p1);
-        players.add(p2);
-        players.add(p3);
-        players.add(p4);
-        players.add(p5);
-        players.add(p6);
-        players.add(p7);
-        players.add(p8);
-        players.add(p9);
-    }
 
 
     //Get methods
@@ -135,6 +121,7 @@ public class Players {
 
 
         players.add(player);
+        savePlayers();
 
         return  player;
     }
@@ -159,6 +146,8 @@ public class Players {
 
         });
 
+        savePlayers();
+
     }
 
     //DELETE methods
@@ -167,6 +156,7 @@ public class Players {
         Player pl = findPlayerById(id);
 
         players.remove(pl);
+        savePlayers();
 
         if (findPlayerById(id) == null) {
             return  pl;
@@ -189,6 +179,79 @@ public class Players {
         }
         return null;
     }
+
+
+    private void startData(){
+/*
+        Player p1 = new Player("0","Gareth Bale","WAL","playing", 10);
+        Player p2 = new Player("1","Nacho","ESP","injured", 100);
+        Player p3 = new Player("2","Harry Kane","EN","playing",1000);
+        Player p4 = new Player("3","Lionel Messi","ARG","injured", 10);
+        Player p5 = new Player("4","Fredrik Ljungberg","SWE","inactive", 10);
+        Player p6 = new Player("5","Sergio Garcia","ESP","playing", 10);
+        Player p7 = new Player("6","Marco Reus","DE","playing", 100);
+        Player p8 = new Player("7","Mesut Özil","DE","injured", 99);
+        Player p9 = new Player("8","Eden Hazard","BE","playing", 10);
+
+        players.add(p1);
+        players.add(p2);
+        players.add(p3);
+        players.add(p4);
+        players.add(p5);
+        players.add(p6);
+        players.add(p7);
+        players.add(p8);
+        players.add(p9);*/
+
+        //savePlayers();
+
+        try {
+            fetchPlayersFromFile("players.json");
+
+            System.out.println("PLAYERS: " + players);
+        }
+        catch (FileNotFoundException e){
+            e.printStackTrace();
+        }
+
+
+    }
+    private Type REVIEW_TYPE = new TypeToken<List<Player>>() {}.getType();
+
+    private  void fetchPlayersFromFile(String filename) throws FileNotFoundException {
+        Gson gson = new Gson();
+        JsonReader reader = new JsonReader(new FileReader(filename));
+        players = gson.fromJson(reader, REVIEW_TYPE);
+    }
+    private void savePlayers(){
+        try {
+            savePlayersAsJsonFile("players.json");
+        }
+        catch (IOException e){
+            e.printStackTrace();
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    private void savePlayersAsJsonFile(String filename) throws IOException {
+
+
+        GsonBuilder gsBuilder = new GsonBuilder();
+
+        Gson gson = gsBuilder.create();
+        String jsObj = gson.toJson(players);
+
+
+        //overwrite every time, append = false
+        try (FileWriter file = new FileWriter(filename, false)){
+            file.write(jsObj);
+            System.out.println("saved to file: players");
+
+        }
+
+    }
+
+
 
 
 

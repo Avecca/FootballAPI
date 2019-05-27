@@ -429,7 +429,7 @@ public class Leagues {
         //overwrite every time, append = false
         try (FileWriter file = new FileWriter(filename, false)){
             file.write(jsObj);
-            System.out.println("saved to file");
+            System.out.println("saved to file: leagues");
 
 /*            for (JSONObject obj:  jsonLeage) {  //jsonLeage
                 file.write(obj.toJSONString());
