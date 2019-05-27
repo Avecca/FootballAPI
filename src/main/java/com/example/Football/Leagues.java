@@ -35,9 +35,6 @@ public class Leagues {
 
 
 
-
-
-
     //GET methods
 
  /*   public List<League> getLeagues() {
@@ -72,10 +69,8 @@ public class Leagues {
                 if (league.getCountry().toUpperCase().equals(country.toUpperCase())){
                     l.add(league);
                 }
-
             }*/
         }
-
 
         return l;
     }
@@ -87,40 +82,28 @@ public class Leagues {
 
     }
 
-
-
-
     //Get all the clubs in a league
     public List<Club> getClubsInLeague(String leagueKey){
 
-
         League l = findLeagueByKey(leagueKey);
 
-
         return l.getClubs();
-
-
     }
 
     //get a specific club in a specific league
     public Club getClubInLeagueWithKey(String leagueKey, String clubKey){
 
         return findClubInLeagueList(leagueKey, clubKey);
-
     }
-
 
     //POST methods
 
     //add a league
     public void addLeague(League league){
+
         leagues.add(league);
-
-
         saveLeagues();
-
     }
-
 
     //add a club to a league
 
@@ -136,18 +119,14 @@ public class Leagues {
 
      /*   League l = findLeagueByKey(legueKey);
         l.addClubToLeague(club);*/
-
         saveLeagues();
-
 
     }
 
-    //TODO add multiple clubs to a league
-
+    //TODO maybe add multiple clubs to a league
 
 
     //PUT & PATCH Methods
-
 
     //PUT a league
     public void replaceLeagueBykey(String key, League newLeagueInfo){
@@ -176,7 +155,6 @@ public class Leagues {
         saveLeagues();
     }
 
-
     //PATCH
 
     //update a league with key, but ignore clubs and key
@@ -198,15 +176,8 @@ public class Leagues {
 
         });
 
-
-
         saveLeagues();
-
-
     }
-
-
-
 
 
     //DELETE methods
@@ -217,14 +188,12 @@ public class Leagues {
         League l = findLeagueByKey(key);
         leagues.remove(l);
 
-
         if (findLeagueByKey(key) == null){
             saveLeagues();
             return  l;
         }
 
         return null;
-
 
     }
 
@@ -234,7 +203,6 @@ public class Leagues {
         l.clearClubList();
 
         saveLeagues();
-
 
   /*      for (Club c: l.getClubs()) {
             l.deleteClubFromList(c);
@@ -257,13 +225,10 @@ public class Leagues {
         }
 
         return null;
-
     }
 
 
-
     //shared methods
-
 
     private League findLeagueByKey(String key){
         for (League i : leagues) {
@@ -272,7 +237,6 @@ public class Leagues {
             }
         }
         return null;
-
     }
 
     //get all the leagues with the same country code
@@ -284,7 +248,6 @@ public class Leagues {
             if (l.getCountry().toUpperCase().equals(country.toUpperCase())){
                 leaguesByCountry.add(l);
             }
-
         }
         return  leaguesByCountry;
     }
@@ -303,11 +266,9 @@ public class Leagues {
             if (c.getKey().equals(clubKey)){
                 return c;
             }
-
         }
 
         return  null;
-
     }
 
     private void startData(){
@@ -327,8 +288,6 @@ public class Leagues {
         leagues.add(l2);
         leagues.add(l3);*/
 
-
-
         try {
             fetchLeaguesFromFile("leagues.json");
 
@@ -337,7 +296,6 @@ public class Leagues {
         catch (FileNotFoundException e){
             e.printStackTrace();
         }
-
 
         System.out.println(leagues.size());
 
@@ -350,8 +308,6 @@ public class Leagues {
             e.printStackTrace();
         }
 */
-
-
 
     }
 
@@ -374,15 +330,9 @@ public class Leagues {
         }
     }
 
-
     //writing test
     @SuppressWarnings("unchecked")
     private  void saveAsJsonFile(String filename) throws IOException {
-
-
-
-
-
 
 /*   //FUNKAR
       ArrayList<JSONObject> jsonLeage = new ArrayList<>();
@@ -405,20 +355,14 @@ public class Leagues {
                 clubVars.put("country", item.getCountry());
                 clubVars.put("code", item.getCode());
 
-
-
-
                 clubs.add(clubVars);
-
 
             }
             jsObj.put("clubs", clubs);
            // jsObj.put("clubs", clubs);
 
-
             jsonLeage.add(jsObj);
         }*/
-
 
         GsonBuilder gsBuilder = new GsonBuilder();
 
@@ -440,8 +384,6 @@ public class Leagues {
             }*/
 
         }
-
-
     }
 
 

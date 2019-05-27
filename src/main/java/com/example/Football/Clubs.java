@@ -26,7 +26,6 @@ public class Clubs {
     }
 
 
-
     //GET methods
 
     //Get all leagues or leagues with name
@@ -59,7 +58,6 @@ public class Clubs {
             }
         }
 
-
         return cl;
     }
 
@@ -67,7 +65,6 @@ public class Clubs {
     public  Club getClubByKey(String key){
 
         return findClubByKey(key);
-
     }
 
     //get the clubs players
@@ -101,13 +98,10 @@ public class Clubs {
                 if (player.getCountry().toUpperCase().equals(country.toUpperCase())){
                     pl.add(player);
                 }
-
             }
         }
 
         return pl;
-
-
     }
 
     //get specified player in club
@@ -118,10 +112,7 @@ public class Clubs {
     }
 
 
-
-
     //POST methods
-
 
     //add a club
     public  void addClub(Club club) {
@@ -129,9 +120,7 @@ public class Clubs {
         saveClubs();
     }
 
-
     //PUT and PATCH methods
-
 
     //update a player in a club
     public  void updatePlayerInClub(String key, String id, Map<Object, Object> newPlayerInfo){
@@ -151,7 +140,6 @@ public class Clubs {
         });
 
         saveClubs();
-
     }
 
 
@@ -160,7 +148,6 @@ public class Clubs {
     public void updateClub(String key, Map<Object,Object> newInfo){
 
         Club theClub = findClubByKey(key);
-
 
         newInfo.remove("key");  //dont allow the key to change
         newInfo.remove("players"); //dont allow updating players
@@ -186,11 +173,10 @@ public class Clubs {
         club.addPlayer(player);
 
         saveClubs();
-
     }
 
-    //DELETE methods
 
+    //DELETE methods
 
     //delete a specific club
     public Club deleteClub(String key){
@@ -205,7 +191,6 @@ public class Clubs {
         }
 
         return null;
-
     }
 
     //delete a specific player from a club
@@ -218,16 +203,12 @@ public class Clubs {
 
         saveClubs();
 
-
         if (findPlayerInClub(key, id) == null){
             return pl;
         }
 
         return null;
-
     }
-
-
 
 
 
@@ -239,7 +220,6 @@ public class Clubs {
             }
         }
         return null;
-
     }
 
     private Player findPlayerInClub(String key, String id){
@@ -253,13 +233,11 @@ public class Clubs {
             if(p.getId().equals(id)){
                 return p;
             }
-
         }
         return null;
     }
 
     private void startData(){
-
 
 /*        Club c1 = new Club("chelsea", "Chelsea", "EN", "CHE");
         Club c2 = new Club("tottenham", "Tottenham", "EN", "TOT");
@@ -297,7 +275,6 @@ public class Clubs {
             e.printStackTrace();
         }
 
-
         //saveClubs();
     }
 
@@ -321,12 +298,10 @@ public class Clubs {
     @SuppressWarnings("unchecked")
     private void saveClubsAsJsonFile(String filename) throws IOException {
 
-
         GsonBuilder gsBuilder = new GsonBuilder();
 
         Gson gson = gsBuilder.create();
         String jsObj = gson.toJson(clubs);
-
 
         //overwrite every time, append = false
         try (FileWriter file = new FileWriter(filename, false)){
@@ -334,6 +309,5 @@ public class Clubs {
             System.out.println("saved to file: clubs");
 
         }
-
     }
 }

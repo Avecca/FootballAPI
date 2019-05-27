@@ -28,7 +28,6 @@ public class Players {
     }
 
 
-
     //Get methods
 
     public List<Player> getPlayers(String searchString, String country, String status){
@@ -72,7 +71,6 @@ public class Players {
         }
 
         return playerList;
-
     }
 
     public Player getPlayerById(String id){
@@ -88,7 +86,6 @@ public class Players {
     }
 
 
-
     //POST methods
 
     public Player addPlayer(Player player){
@@ -101,7 +98,6 @@ public class Players {
                 idCheck = true;
                 break;
             }
-
         }
 
         if (idCheck)
@@ -112,7 +108,6 @@ public class Players {
                 if (Integer.parseInt(pl.getId()) > max){
                     max = Integer.parseInt(pl.getId());
                 }
-
             }
             String maxString = Integer.toString(max + 1);
             player.setId(maxString);
@@ -125,7 +120,6 @@ public class Players {
 
         return  player;
     }
-
 
 
     //PUT and PATCH methods
@@ -214,7 +208,6 @@ public class Players {
             e.printStackTrace();
         }
 
-
     }
     private Type REVIEW_TYPE = new TypeToken<List<Player>>() {}.getType();
 
@@ -250,9 +243,6 @@ public class Players {
         }
 
     }
-
-
-
-
+    
 
 }
